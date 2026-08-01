@@ -58,7 +58,34 @@ Account ID: Cloudflare dashboard → any domain or Workers → right sidebar / o
 
 Custom domain `blog.samikh.dev` is declared in [`wrangler.jsonc`](wrangler.jsonc). First successful `production` deploy attaches it when the zone is on that account.
 
-## Content
+## Observability
+
+Enabled in [`wrangler.jsonc`](wrangler.jsonc):
+
+- **Workers Logs** + invocation logs (`observability.logs`)
+- **Traces** (`observability.traces`)
+- **Analytics Engine** dataset `blog_views` via binding `ANALYTICS`
+- Request logging Worker in [`worker/index.ts`](worker/index.ts) (path, status, latency, country, colo)
+
+After deploy, view logs/traces: Cloudflare dashboard → Workers → `sami-personal-website` → **Observability**.
+
+Query page views (SQL API / Analytics Engine):
+
+```sql
+SELECT
+  index1 AS path,
+  blob1 AS country,
+  SUM(_sample_interval) AS views
+FROM blog_views
+WHERE timestamp > NOW() - INTERVAL '1' DAY
+GROUP BY path, country
+ORDER BY views DESC
+```
+
+### Console noise (not from this site)
+
+- `static.cloudflareinsights.com/beacon.min.js` / `ERR_CONNECTION_REFUSED` — usually an ad blocker, DNS filter, or a Cloudflare Web Analytics / RUM snippet injected outside this repo. Our HTML does not include that script. Check **Web Analytics** / **Zaraz** on the `samikh.dev` zone, or disable the blocker for this host.
+- `mf.js` / `Params are not set` and `runtime.lastError: Receiving end does not exist` — typical browser-extension noise (e.g. wallets), not application code.
 
 Posts live in [`src/content/blog/`](src/content/blog/) as Markdown with frontmatter (`title`, `description`, `pubDate`). Edit [`src/data/site.ts`](src/data/site.ts) for site metadata.
 

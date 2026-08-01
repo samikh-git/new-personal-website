@@ -7,5 +7,6 @@ export const site = {
   githubHandle: 'samikh-git',
   twitter: 'https://x.com/houssaini1391',
   twitterHandle: 'houssaini1391',
+  linkedin: 'https://www.linkedin.com/in/samihoussaini',
   avatar: '/avatar.png',
 } as const;

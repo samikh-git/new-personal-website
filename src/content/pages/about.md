@@ -8,4 +8,4 @@ I'm **Sami Houssaini**. I live in Berkeley, CA and build tools for coding agents
 
 Lately that means [skiff](https://github.com/samikh-git/skiff), a Rust CLI for MCP, OpenAPI, and GraphQL, plus a workspace stack for running agents on machines you own.
 
-Code is on [GitHub](https://github.com/samikh-git). I'm [@houssaini1391](https://x.com/houssaini1391) on Twitter.
+Code is on [GitHub](https://github.com/samikh-git). I'm [@houssaini1391](https://x.com/houssaini1391) on Twitter, and on [LinkedIn](https://www.linkedin.com/in/samihoussaini).

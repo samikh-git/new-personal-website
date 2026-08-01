@@ -20,7 +20,24 @@ bun run dev
 | `bun run preview` | Preview the production build |
 | `bun run deploy` | Build and deploy to Cloudflare Workers via Wrangler |
 
-First deploy requires Cloudflare auth (`bunx wrangler login`). Production custom domain: `blog.samikh.dev`.
+## Deploy / CI
+
+Pushes to `main` and pull requests run [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml):
+
+1. `bun install --frozen-lockfile`
+2. `bun run build`
+3. `wrangler deploy` on `main`, or `wrangler versions upload` on PRs (preview)
+
+Add these GitHub Actions secrets (repo → Settings → Secrets and variables → Actions):
+
+| Secret | Value |
+|--------|-------|
+| `CLOUDFLARE_API_TOKEN` | Token with **Edit Cloudflare Workers** |
+| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID |
+
+Custom domain `blog.samikh.dev` is declared in [`wrangler.jsonc`](wrangler.jsonc) (`routes` + `custom_domain`). The zone `samikh.dev` must be on the same Cloudflare account.
+
+Optional alternative: connect the repo in the Cloudflare dashboard under **Workers → Settings → Builds** (Workers Builds). The GitHub Action is enough on its own.
 
 ## Content
 
@@ -33,3 +50,4 @@ RSS: [`/rss.xml`](https://blog.samikh.dev/rss.xml)
 - Astro 7 (static)
 - Bun
 - Cloudflare Workers static assets (`wrangler.jsonc`)
+- GitHub Actions → Wrangler

@@ -30,16 +30,21 @@ Pushes to `main` and pull requests run [`.github/workflows/deploy.yml`](.github/
 
 ### One-time GitHub Environment setup
 
-1. Open the repo: https://github.com/samikh-git/new-personal-website
-2. Go to **Settings → Environments**
-3. Click **New environment**, name it `production`, then **Configure environment**
-4. Under **Environment secrets**, add:
-   - `CLOUDFLARE_API_TOKEN` — Cloudflare API token with **Edit Cloudflare Workers** (scope to this account; include zone access for `samikh.dev` if prompted)
-   - `CLOUDFLARE_ACCOUNT_ID` — Cloudflare account ID (Workers overview / Account → copy Account ID)
-5. Click **New environment** again, name it `preview`
-6. Add the **same two secrets** to `preview` (or reuse a narrower token if you prefer)
+Environment name must be exactly **`deploy`** (matches the workflow).
 
-Optional for `production`: enable **Required reviewers** or **Wait timer** under Environment protection rules.
+1. Open https://github.com/samikh-git/new-personal-website/settings/environments
+2. Open the **`deploy`** environment (create it if missing)
+3. Under **Environment secrets** (not repository secrets), add:
+
+| Name | Value |
+|------|--------|
+| `CLOUDFLARE_API_TOKEN` | Cloudflare API token (Edit Cloudflare Workers) |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID |
+
+4. Confirm the names match **exactly** (no typos, no trailing spaces)
+5. Re-run the failed workflow: Actions → failed run → **Re-run all jobs**
+
+Do **not** put these only under Settings → Secrets and variables → Actions (repo secrets). With `environment: deploy`, only **environment** secrets are available to that job.
 
 ### Cloudflare API token (exact)
 

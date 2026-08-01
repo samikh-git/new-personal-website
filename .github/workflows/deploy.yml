@@ -14,8 +14,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # Secrets live on the GitHub Environment (not repo-level secrets).
-    environment: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+    # Must match the GitHub Environment name exactly (Settings → Environments).
+    environment: deploy
     permissions:
       contents: read
       deployments: write
@@ -33,6 +33,20 @@ jobs:
 
       - name: Build
         run: bun run build
+
+      - name: Check Cloudflare secrets
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN is empty. Add it under Settings → Environments → deploy → Environment secrets."
+            exit 1
+          fi
+          if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::CLOUDFLARE_ACCOUNT_ID is empty. Add it under Settings → Environments → deploy → Environment secrets."
+            exit 1
+          fi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3

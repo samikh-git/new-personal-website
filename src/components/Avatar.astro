@@ -1,5 +1,6 @@
 ---
 import { avatarImg } from '../lib/images';
+import { Image } from 'astro:assets'
 
 interface Props {
   size?: number;
@@ -10,7 +11,7 @@ const { size = 56, class: className = 'avatar' } = Astro.props;
 const img = avatarImg(size);
 ---
 
-<img
+<Image
   class={className}
   src={img.src}
   srcset={img.srcset}

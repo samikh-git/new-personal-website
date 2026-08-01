@@ -1,0 +1,48 @@
+---
+interface Post {
+  id: string;
+  data: {
+    title: string;
+    description: string;
+    pubDate: Date;
+  };
+}
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+---
+
+<ul class="post-list">
+  {
+    posts.map((post) => (
+      <li class="post-list__item">
+        <a class="post-list__link" href={`/blog/${post.id}/`}>
+          <span class="post-list__meta">
+            <time datetime={post.data.pubDate.toISOString()}>
+              {formatDate(post.data.pubDate)}
+            </time>
+          </span>
+          <h2 class="post-list__title">
+            {post.data.title}
+            <span class="post-list__arrow" aria-hidden="true">
+              →
+            </span>
+          </h2>
+          <p class="post-list__excerpt">{post.data.description}</p>
+        </a>
+      </li>
+    ))
+  }
+</ul>

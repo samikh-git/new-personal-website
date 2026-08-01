@@ -87,9 +87,16 @@ ORDER BY views DESC
 - `static.cloudflareinsights.com/beacon.min.js` / `ERR_CONNECTION_REFUSED` — usually an ad blocker, DNS filter, or a Cloudflare Web Analytics / RUM snippet injected outside this repo. Our HTML does not include that script. Check **Web Analytics** / **Zaraz** on the `samikh.dev` zone, or disable the blocker for this host.
 - `mf.js` / `Params are not set` and `runtime.lastError: Receiving end does not exist` — typical browser-extension noise (e.g. wallets), not application code.
 
-Posts live in [`src/content/blog/`](src/content/blog/) as Markdown with frontmatter (`title`, `description`, `pubDate`). Edit [`src/data/site.ts`](src/data/site.ts) for site metadata.
+## Content
+
+- Blog posts: [`src/content/blog/`](src/content/blog/) (Markdown)
+- Site pages: [`src/content/pages/`](src/content/pages/) (Markdown → `/[slug]/`)
+
+Page frontmatter: `title`, `description`, optional `showAvatar`, optional `draft`.
 
 RSS: [`/rss.xml`](https://blog.samikh.dev/rss.xml)
+
+Custom error pages: [`src/pages/404.astro`](src/pages/404.astro), [`src/pages/500.astro`](src/pages/500.astro). Cloudflare serves `404.html` for unknown routes; the Worker serves `500.html` on upstream failures.
 
 ## Stack
 

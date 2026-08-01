@@ -1,0 +1,49 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  showAvatar?: boolean;
+  structuredData?: Record<string, unknown>;
+}
+
+const {
+  title,
+  description,
+  showAvatar = false,
+  structuredData,
+} = Astro.props;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  structuredData={structuredData}
+>
+  <Nav slot="nav" />
+  <div class="page-md prose-width">
+    <header class="page-md__header">
+      <h1>{title}</h1>
+      {
+        showAvatar && (
+          <img
+            class="avatar"
+            src={site.avatar}
+            alt=""
+            width="56"
+            height="56"
+            decoding="async"
+          />
+        )
+      }
+    </header>
+    <div class="prose page-md__body">
+      <slot />
+    </div>
+  </div>
+  <Footer slot="footer" />
+</BaseLayout>

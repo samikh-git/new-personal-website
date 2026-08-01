@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  code?: string;
+  title?: string;
+  message?: string;
+}
+
+const {
+  code = '404',
+  title = 'Not found',
+  message = "That page doesn't exist.",
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={message}>
+  <Nav slot="nav" />
+  <div class="error-page prose-width">
+    <p class="error-page__code">{code}</p>
+    <h1>{title}</h1>
+    <p>{message}</p>
+    <p><a href="/">Back to the blog</a></p>
+  </div>
+  <Footer slot="footer" />
+</BaseLayout>

@@ -1,15 +1,9 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
+import ErrorLayout from '../layouts/ErrorLayout.astro';
 ---
 
-<BaseLayout title="Not found" description="Page not found">
-  <Nav slot="nav" />
-  <div class="not-found prose-width">
-    <h1>404</h1>
-    <p>That page doesn't exist.</p>
-    <p><a href="/">Back to the blog</a></p>
-  </div>
-  <Footer slot="footer" />
-</BaseLayout>
+<ErrorLayout
+  code="404"
+  title="Not found"
+  message="That page doesn't exist."
+/>

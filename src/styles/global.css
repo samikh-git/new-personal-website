@@ -496,11 +496,13 @@ a:hover {
 
 /* About */
 
-.about {
+/* Markdown pages */
+
+.page-md {
   padding: 3.5rem 0 1rem;
 }
 
-.about__identity {
+.page-md__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -508,25 +510,27 @@ a:hover {
   margin-bottom: 1.25rem;
 }
 
-.about__identity h1 {
+.page-md__header h1 {
   margin: 0;
-}
-
-.about h1 {
-  margin: 0 0 1rem;
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.1;
 }
 
-.about p {
-  margin: 0 0 1rem;
-  color: var(--muted);
-  max-width: 36rem;
+.page-md__body.prose {
+  padding: 0 0 1rem;
 }
 
-.about p strong {
+.page-md__body.prose > :first-child {
+  margin-top: 0;
+}
+
+.page-md__body.prose p {
+  color: var(--muted);
+}
+
+.page-md__body.prose p strong {
   color: var(--text);
   font-weight: 600;
 }
@@ -562,37 +566,46 @@ a:hover {
   color: var(--text);
 }
 
-/* 404 */
+/* Error pages */
 
-.not-found {
+.error-page {
   padding: 5rem 0 2rem;
   text-align: center;
 }
 
-.not-found h1 {
+.error-page__code {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.error-page h1 {
   margin: 0 0 0.5rem;
   font-size: 2.5rem;
   font-weight: 800;
   letter-spacing: -0.04em;
 }
 
-.not-found p {
+.error-page p {
   margin: 0 0 1.5rem;
   color: var(--muted);
 }
 
-.not-found a {
+.error-page a {
   font-weight: 600;
   text-decoration: none;
 }
 
-.not-found a::after {
+.error-page a::after {
   content: ' →';
   display: inline-block;
   transition: transform 0.2s var(--ease);
 }
 
-.not-found a:hover::after {
+.error-page a:hover::after {
   transform: translateX(0.15rem);
 }
 

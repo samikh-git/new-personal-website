@@ -9,9 +9,22 @@ import { site } from '../data/site';
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: site.name,
+  description: site.description,
+  url: Astro.site?.href,
+  author: {
+    '@type': 'Person',
+    name: site.name,
+    sameAs: [site.github, site.twitter],
+  },
+};
 ---
 
-<BaseLayout>
+<BaseLayout structuredData={structuredData}>
   <Nav slot="nav" />
   <section class="home-intro">
     <div class="home-intro__grid" aria-hidden="true"></div>

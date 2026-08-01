@@ -8,6 +8,34 @@ function country(request: Request): string {
   return cf?.country ?? 'XX';
 }
 
+async function errorPage(
+  env: Env,
+  request: Request,
+  status: number,
+  fallbackText: string,
+): Promise<Response> {
+  const errorUrl = new URL(`/${status}.html`, request.url);
+  try {
+    const asset = await env.ASSETS.fetch(new Request(errorUrl, request));
+    if (asset.ok) {
+      return new Response(asset.body, {
+        status,
+        headers: asset.headers,
+      });
+    }
+  } catch (error) {
+    console.error('error_page_fetch_failed', {
+      status,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
+  return new Response(fallbackText, {
+    status,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  });
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -25,7 +53,12 @@ export default {
         method: request.method,
         error: error instanceof Error ? error.message : String(error),
       });
-      return new Response('Upstream asset fetch failed', { status: 502 });
+      return errorPage(env, request, 500, 'Something went wrong.');
+    }
+
+    // If the asset layer returned a bare 5xx, prefer the branded error page.
+    if (response.status >= 500) {
+      response = await errorPage(env, request, 500, 'Something went wrong.');
     }
 
     const status = response.status;
@@ -41,7 +74,6 @@ export default {
       ray,
     });
 
-    // Page-view style analytics (skip obvious static assets).
     const isAsset =
       /\.(css|js|map|png|jpe?g|gif|svg|ico|webp|woff2?|txt|xml)$/i.test(url.pathname) ||
       url.pathname.startsWith('/_astro/');

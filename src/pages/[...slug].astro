@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from 'astro:content';
+import PageLayout from '../layouts/PageLayout.astro';
+import { site } from '../data/site';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages', ({ data }) => !data.draft);
+  return pages.map((page) => ({
+    params: { slug: page.id },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+
+const structuredData =
+  page.id === 'about'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: site.name,
+        url: new URL('/about/', Astro.site).href,
+        image: new URL(site.avatar, Astro.site).href,
+        sameAs: [site.github, site.twitter],
+      }
+    : undefined;
+---
+
+<PageLayout
+  title={page.data.title}
+  description={page.data.description}
+  showAvatar={page.data.showAvatar}
+  structuredData={structuredData}
+>
+  <Content />
+</PageLayout>

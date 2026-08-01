@@ -2,14 +2,16 @@
 import BaseLayout from './BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
 
 interface Props {
   title: string;
   description: string;
   pubDate: Date;
+  updatedDate?: Date;
 }
 
-const { title, description, pubDate } = Astro.props;
+const { title, description, pubDate, updatedDate } = Astro.props;
 
 const formatted = pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -17,9 +19,31 @@ const formatted = pubDate.toLocaleDateString('en-US', {
   day: 'numeric',
   timeZone: 'UTC',
 });
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  datePublished: pubDate.toISOString(),
+  dateModified: (updatedDate ?? pubDate).toISOString(),
+  mainEntityOfPage: canonical.href,
+  author: {
+    '@type': 'Person',
+    name: site.name,
+  },
+};
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  publishedTime={pubDate}
+  modifiedTime={updatedDate}
+  structuredData={structuredData}
+>
   <Nav slot="nav" />
   <header class="post-banner">
     <div class="post-banner__inner">

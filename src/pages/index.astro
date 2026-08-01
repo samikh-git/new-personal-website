@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import PostList from '../components/PostList.astro';
+import Avatar from '../components/Avatar.astro';
 import { site } from '../data/site';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
@@ -34,14 +35,7 @@ const structuredData = {
           <h1>{site.name}</h1>
           <p>{site.description}</p>
         </div>
-        <img
-          class="avatar"
-          src={site.avatar}
-          alt=""
-          width="56"
-          height="56"
-          decoding="async"
-        />
+        <Avatar />
       </div>
     </div>
   </section>

@@ -1,3 +1,7 @@
+@import '@fontsource-variable/inter/wght.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
 :root {
   --bg: #ffffff;
   --bg-soft: #f8f9fb;
@@ -8,7 +12,7 @@
   --accent-bright: #3b82f6;
   --banner: #007aff;
   --code-bg: #f6f8fa;
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --max: 46rem;
   --page: 72rem;

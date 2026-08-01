@@ -8,5 +8,6 @@ export const site = {
   twitter: 'https://x.com/houssaini1391',
   twitterHandle: 'houssaini1391',
   linkedin: 'https://www.linkedin.com/in/samihoussaini',
+  /** Raw source asset; prefer `avatarUrl` / `<Avatar />` for display. */
   avatar: '/avatar.png',
 } as const;

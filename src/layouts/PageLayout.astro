@@ -2,7 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { site } from '../data/site';
+import Avatar from '../components/Avatar.astro';
 
 interface Props {
   title: string;
@@ -28,18 +28,7 @@ const {
   <div class="page-md prose-width">
     <header class="page-md__header">
       <h1>{title}</h1>
-      {
-        showAvatar && (
-          <img
-            class="avatar"
-            src={site.avatar}
-            alt=""
-            width="56"
-            height="56"
-            decoding="async"
-          />
-        )
-      }
+      {showAvatar && <Avatar />}
     </header>
     <div class="prose page-md__body">
       <slot />

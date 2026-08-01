@@ -1,5 +1,6 @@
 ---
 import { site } from '../data/site';
+import { avatarOgUrl } from '../lib/images';
 import '../styles/global.css';
 
 interface Props {
@@ -15,7 +16,7 @@ interface Props {
 const {
   title,
   description = site.description,
-  image = site.avatar,
+  image,
   type = 'website',
   publishedTime,
   modifiedTime,
@@ -23,7 +24,9 @@ const {
 } = Astro.props;
 const pageTitle = title ? `${title} · ${site.shortName}` : `${site.name} · Blog`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL(image, Astro.site);
+const ogImage = image
+  ? new URL(image, Astro.site).href
+  : avatarOgUrl(Astro.site ?? 'https://blog.samikh.dev');
 ---
 
 <!doctype html>
@@ -45,12 +48,6 @@ const ogImage = new URL(image, Astro.site);
     <meta name="description" content={description} />
     <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href={canonical} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={type} />

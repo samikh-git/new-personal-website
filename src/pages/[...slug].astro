@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import { site } from '../data/site';
+import { avatarOgUrl } from '../lib/images';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages', ({ data }) => !data.draft);
@@ -21,7 +22,7 @@ const structuredData =
         '@type': 'Person',
         name: site.name,
         url: new URL('/about/', Astro.site).href,
-        image: new URL(site.avatar, Astro.site).href,
+        image: avatarOgUrl(Astro.site ?? 'https://blog.samikh.dev'),
         sameAs: [site.github, site.twitter, site.linkedin],
       }
     : undefined;

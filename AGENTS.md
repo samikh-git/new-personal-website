@@ -49,7 +49,8 @@ All user-facing writing (blog posts, about/pages, post `description` fields, and
 
 ## Worker / ops
 
-- [`wrangler.jsonc`](wrangler.jsonc): custom domain `blog.samikh.dev`, observability, Analytics Engine `blog_views`
+- [`wrangler.jsonc`](wrangler.jsonc): custom domain `blog.samikh.dev`, observability, Analytics Engine `blog_views`, Images binding `IMAGES`, Workers Cache enabled
+- Avatar display uses Cloudflare Images via `/img/avatar?w=&h=&fit=` ([`worker/index.ts`](worker/index.ts)); source file stays at `public/avatar.png`
 - Custom errors: `src/pages/404.astro`, `src/pages/500.astro` → Worker serves branded `500.html` on asset failures
 - CI: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) uses GitHub Environment **`deploy`** (secrets live there, not repo-level)
 

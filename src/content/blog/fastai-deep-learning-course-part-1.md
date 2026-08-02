@@ -1,0 +1,25 @@
+---
+title: "FastAI Deep Learning Course - Part 1"
+description: "Notes from the start of Fast.ai: what deep learning is, validation sets, epochs, overfitting, and transfer learning."
+pubDate: 2025-04-22
+---
+
+I have been following the [Fast AI](https://course.fast.ai/) course on deep learning to begin understanding the technical details of these important concepts. The purpose of these blogs, for now, will be to summarize my learnings, share insights, ask open-ended questions, and any other educative use I can derive from this.
+
+## What is deep learning?
+
+To answer this question, it is first necessary to see what we mean by machine learning. Machine learning is a non-deterministic form of computing. We are not formally writing out each step that our computer must take to produce the output we request. We are "training" our computers/models to produce results that are useful without providing detailed and alogrithimic steps as to how to produce that result.
+
+Deep learning is a particular subset of machine learning that uses deep neural networks. Neural networks are a mathematical function that seek to replicate the cognitive processes made by the neurons of human brain. Neural netwroks are very powerful in that they are able to solve any problem (see "Universal Approximation Theorem") simply by varying the weights used in the training.
+
+## Important Notes
+
+- Validation sets are very important as they allow us to measure the efficacy of our model. If we don't have a validation set, we are at risk of overfitting our model.
+
+## Vocabulary
+
+**Epoch:** when our model has looked at all of our training data once.
+
+**Overfitting:** this is a problem that occurs when we let our model train fro too long on our dataset. Eventually, it will learn how to predict our training data perfectly but only our training data. When we introduce new data, it will not be able to generalize the insights from the training data to it.
+
+**Transfer learning:** training an already pre-trained model. This helps save time by not having to train a neural network from scratch which can take much more time and resources.

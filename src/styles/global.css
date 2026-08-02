@@ -1,6 +1,7 @@
 @import '@fontsource-variable/inter/wght.css';
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/500.css';
+@import 'katex/dist/katex.min.css';
 
 :root {
   --bg: #ffffff;
@@ -490,6 +491,13 @@ a:hover {
   border: none;
   border-top: 1px solid var(--border);
   margin: 2rem 0;
+}
+
+.prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.25rem 0;
 }
 
 .prose a.arrow-link {

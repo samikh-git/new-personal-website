@@ -4,13 +4,13 @@ description: Mom's birthday is 2 Muharram. Gregorian "repeat yearly" is the wron
 pubDate: 2026-08-02
 ---
 
-Most calendar apps fall apart when the date you care about is Hijri. Mom's birthday is 2 Muharram every year. On a Gregorian calendar that drifts, and "repeat yearly" on June 17 is the wrong kind of yearly. I got tired of converting by hand, so I built [Hijri Reminders](https://www.hijri.cloudwhisper.dev).
+Mom's birthday is 2 Muharram every year. On a Gregorian calendar that drifts, and "repeat yearly" on June 17 is the wrong kind of yearly: it pins a solar date and comes back every twelve months, while a lunar day slides about eleven days earlier each cycle. I got tired of converting by hand and pasting one-off events into Apple Calendar.
 
-You pick a Hijri day, month, and year, add a title and an email. The API converts the next ten Hijri years to Gregorian, packs them into one `.ics`, and emails the file. Import once. The anniversaries show up without another round of date math.
+So I built [Hijri Reminders](https://www.hijri.cloudwhisper.dev). You pick a Hijri day, month, and year, add a title and an email. The API converts the next ten Hijri years to Gregorian, packs them into one `.ics`, and emails the file. After one import, the anniversaries show up without another round of date math.
 
 ## Why "yearly" lies
 
-A Hijri year is about 11 days shorter than a Gregorian year, so the same lunar day lands on a different Gregorian date every cycle. Phone calendars and Google Calendar are built around Gregorian recurrence. You can fake it with a pile of one-off events. Most people do that, then forget to extend the list.
+Phone calendars and Google Calendar are built around Gregorian recurrence. You can fake a Hijri anniversary with a pile of one-off events, and most people do that, then forget to extend the list when the decade runs out.
 
 `RRULE` does not help here. A Gregorian yearly rule pins a solar date. What I needed was ten concrete Gregorian dates for the same Hijri day and month, then a file calendars already know how to import.
 
@@ -39,7 +39,7 @@ On success the JSON includes the Gregorian date list, so the dashboard can show 
 
 Each year is an Aladhan `hToG` call. Ten of those run in parallel. Successful responses sit in Cloudflare's `fetch` cache for a year (`cacheEverything` plus a long `cacheTtlByStatus`). Under UAQ a given Hijri date maps to one Gregorian date, so re-fetching on every reminder is wasted work.
 
-The calendar file is one `VCALENDAR` with ten `VEVENT`s. Events are all-day: `DTSTART;VALUE=DATE` and `DTEND;VALUE=DATE` with an exclusive end the next day. A timed UTC start would shift the civil day for anyone outside UTC. Date-only values keep Apple Calendar and Google on the intended date. Titles include the Hijri date string so the event still makes sense after import, like `Mom's birthday (2 Muharram 1448)`.
+The calendar file is one `VCALENDAR` with ten `VEVENT`s. Events are all-day: `DTSTART;VALUE=DATE` and `DTEND;VALUE=DATE` with an exclusive end the next day. A timed UTC start would shift the civil day for anyone outside UTC, so the events stay date-only and keep Apple Calendar and Google on the intended date. Titles include the Hijri date string so the event still makes sense after import, like `Mom's birthday (2 Muharram 1448)`.
 
 Email comes from `reminders@hijri.cloudwhisper.dev` via [Resend](https://resend.com/). The message includes an abuse reference so someone who did not request a reminder can quote it back. On a successful send, the Worker logs client IP with that reference.
 
@@ -51,4 +51,4 @@ CORS is an allowlist for the dashboard origins plus local Vite. The form is publ
 
 ## Limits
 
-No live sync with your calendar account. No automatic refresh if Umm al-Qura tables change years out. It is a one-shot export: ten dates, one file, email. Want another decade later? Submit again.
+There is no live sync with your calendar account, and no automatic refresh if Umm al-Qura tables change years out. It is a one-shot export: ten dates, one file, email. Want another decade later? Submit again. Try it at [hijri.cloudwhisper.dev](https://www.hijri.cloudwhisper.dev), or dig into the code on [GitHub](https://github.com/samikh-git/hijri-reminders).

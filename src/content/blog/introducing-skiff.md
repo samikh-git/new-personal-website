@@ -1,12 +1,14 @@
 ---
 title: Introducing skiff
-description: A Rust CLI that turns MCP, OpenAPI, and GraphQL into commands agents can call, without codegen, tuned for warm discovery.
+description: A Rust CLI that turns MCP, OpenAPI, and GraphQL into shell commands agents can call, without codegen, tuned for warm discovery.
 pubDate: 2026-07-31
 ---
 
 Agents talk to tools constantly. On a fat MCP server (Cloudflare's docs catalog is a good example), a cold call can mean spawning a process, negotiating a transport, and shipping a multi-megabyte `list_tools` payload just so the agent can pick one function. You pay for that in wall time and in context tokens.
 
-I wanted a runtime CLI agents could use like any other shell tool: discover a little at a time, keep a warm path, and stay quiet when the answer is huge. That project is **[skiff](https://github.com/samikh-git/skiff)** (crates.io package `skiff-cli`). It takes the idea behind Python [mcp2cli](https://github.com/knowsuchagency/mcp2cli) and reimplements it in Rust for latency and agent-friendly defaults, not as a line-for-line port.
+The annoying part is how often you pay it. Agent loops restart clients, and every restart redoes initialize and re-fetches the catalog. On a small server that is noise. On a fat one it becomes the slowest step in the loop, and it burns tokens before the agent has done any useful work.
+
+I wanted a runtime CLI agents could treat like any other shell tool. Discovery should be progressive, warm once something is known, and quiet when the answer is huge. That project is **[skiff](https://github.com/samikh-git/skiff)** (crates.io package `skiff-cli`). It takes the idea behind Python [mcp2cli](https://github.com/knowsuchagency/mcp2cli) and reimplements it in Rust for latency and agent-friendly defaults, not as a line-for-line port.
 
 ## One binary, three source kinds
 
@@ -27,9 +29,9 @@ skiff --mcp http://127.0.0.1:8000/mcp --list
 skiff --graphql http://127.0.0.1:4000 --fields "id name" user --id 1
 ```
 
-Discovery is progressive. Flags like `--list`, `--search`, `--detail names|brief|full`, `--describe`, and `--agent` (or `SKIFF_AGENT=1`) bias toward compact JSON that fits an agent loop. Oversized results land in a spool directory with a short pointer on stdout you can `rg` later.
+Discovery is progressive. Flags like `--list`, `--search`, `--detail names|brief|full`, `--describe`, and `--agent` (or `SKIFF_AGENT=1`) bias toward compact JSON that fits an agent loop. Oversized results land in a spool directory with a short pointer on stdout you can `rg` later. The agent gets the handle; the megabytes stay on disk.
 
-## Sessions: stop paying initialize every time
+## Sessions, bake, and spool
 
 On Unix, skiff can keep a long-lived MCP client behind a Unix-domain socket:
 
@@ -40,9 +42,7 @@ skiff --session myfs echo --message hi
 skiff --session-stop myfs
 ```
 
-The agent skips the `npx`/initialize tax on every call. Socket permissions are locked down (`0o600`, same-UID peer check). Idle timeout defaults to 30 minutes. Windows sessions aren't shipped yet.
-
-## Bake, spool, and secrets
+After that, the agent skips the `npx`/initialize tax on every call. Socket permissions are locked down (`0o600`, same-UID peer check). Idle timeout defaults to 30 minutes. Windows sessions aren't shipped yet.
 
 Named configs (`skiff bake create …` then `skiff @name …`) keep recurring sources out of every prompt. Spool keeps fat tool output off the transcript. Auth headers and OAuth client material prefer `env:` / `file:` prefixes so secrets don't land on argv.
 
@@ -64,12 +64,12 @@ I measured skiff against upstream Python mcp2cli on Cloudflare's MCP (10 warm ru
 | Fat catalog `--search workers --json --compact --top 20` | ~10 ms | ~3.2 s |
 | Fat catalog `--list --json --compact` | ~13 ms | ~1.8 s |
 
-After the cold fetch, Rust stays near 10 ms. Warm discovery reads a slim on-disk tools index (names plus sparse overrides; postings rebuilt in memory) or, with `--session`, searches an in-daemon RAM index over Unix IPC. Python's warm path on that catalog still often paid seconds.
+After the cold fetch, Rust stays near 10 ms. Warm discovery reads a slim on-disk tools index (names plus sparse overrides; postings rebuilt in memory) or, with `--session`, searches an in-daemon RAM index over Unix IPC. Python's warm path on that catalog still often paid seconds. That gap is why I started: I wanted discovery that stays cheap once the catalog is known.
 
 Caveats: stdout shapes aren't identical, token estimates are heuristic (`ceil(bytes/4)`), and the Python side needed an SDK pin for a fair streamable run. The clearest gap is warm discovery latency on large catalogs, which is what the compact index and session path are for. For context size, progressive `--detail` / `--top` / `--agent` still matter more than raw CLI speed.
 
 ## What's next
 
-Shipped: OpenAPI, MCP stdio/HTTP (streamable + SSE), OAuth, GraphQL, Unix sessions, bake/`@name`, spool, native `--toon`, and agent-oriented defaults. Still open: Windows sessions, and mid-daemon OAuth refresh when the token TTL is shorter than idle.
+What ships today covers OpenAPI, MCP stdio/HTTP (streamable + SSE), OAuth, GraphQL, Unix sessions, bake/`@name`, spool, native `--toon`, and agent-oriented defaults. Still open are Windows sessions, and mid-daemon OAuth refresh when the token TTL is shorter than idle.
 
 If you're wiring agents to MCP or OpenAPI and the cold path is chewing your loop, try skiff and file issues on [GitHub](https://github.com/samikh-git/skiff).
